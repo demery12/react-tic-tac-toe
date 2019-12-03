@@ -61,39 +61,41 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-    const moveHistory = this.state.moveHistory.slice(0, this.state.stepNumber + 1);
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
-      history: history.concat([{squares: squares,}]),
+      history: history.concat([{squares: squares, move: indexToColRow(i)}]),
       xIsNext: !this.state.xIsNext,
       stepNumber: history.length,
-      moveHistory: moveHistory.concat(indexToColRow(i)),
     });
   }
 
    jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0,
-    });
-  }
+        this.setState({
+          stepNumber: step,
+          xIsNext: (step % 2) === 0,
+        });
+   }
+
+   boldSelf(self,y,z){
+        console.log("callMe")
+        console.log(self);
+        console.log(this);
+   }
 
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-    console.log(history);
-    const moves = history.map((step, move) => {
-      console.log(step, move);
-      const desc = move ?
-        'Go to move #' + move : //+ ': ' + :
+    const moves = history.map((step, moveNumber) => {
+      const desc = moveNumber ?
+        'Go to move #' + moveNumber + ': ' + step.move:
         'Go to game start';
       return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        <li key={moveNumber} style={{'fontWeight': this.state.stepNumber === moveNumber ? 'bold' : 'normal'}}>
+          <button style={{'fontWeight': 'inherit'}} onClick={() => {this.jumpTo(moveNumber); this.boldSelf(this)}}>{desc}</button>
         </li>
       );
     });
@@ -130,7 +132,6 @@ ReactDOM.render(
 );
 
 function calculateWinner(squares) {
-console.log(squares);
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
