@@ -15,29 +15,23 @@ class Board extends React.Component {
     return (
       <Square
           value={this.props.squares[i]}
+          key={i}
           onClick={() => this.props.onClick(i)}
       />
      );
+  }
+   renderRow(i) {
+    return (
+        <div className="board-row" key={i}>
+            {[0,1,2].map(x => this.renderSquare(x+(i*3)))}
+        </div>
+    );
   }
 
   render() {
     return (
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {[0,1,2].map(x=>this.renderRow(x))}
       </div>
     );
   }
@@ -79,12 +73,6 @@ class Game extends React.Component {
         });
    }
 
-   boldSelf(self,y,z){
-        console.log("callMe")
-        console.log(self);
-        console.log(this);
-   }
-
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -95,7 +83,7 @@ class Game extends React.Component {
         'Go to game start';
       return (
         <li key={moveNumber} style={{'fontWeight': this.state.stepNumber === moveNumber ? 'bold' : 'normal'}}>
-          <button style={{'fontWeight': 'inherit'}} onClick={() => {this.jumpTo(moveNumber); this.boldSelf(this)}}>{desc}</button>
+          <button style={{'fontWeight': 'inherit'}} onClick={() => this.jumpTo(moveNumber)}>{desc}</button>
         </li>
       );
     });
