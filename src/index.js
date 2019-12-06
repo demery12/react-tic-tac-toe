@@ -48,6 +48,7 @@ class Game extends React.Component {
       moveHistory: [],
       stepNumber: 0,
       xIsNext: true,
+      ascendingOrder: true,
     };
   }
 
@@ -63,7 +64,6 @@ class Game extends React.Component {
       history: history.concat([{squares: squares, move: indexToColRow(i)}]),
       xIsNext: !this.state.xIsNext,
       stepNumber: history.length,
-      ascendingOrder: true,
     });
   }
 
@@ -81,15 +81,19 @@ class Game extends React.Component {
     }
 
   render() {
-    const history = this.state.history : this.state.history.slice().reverse();
+    const history = this.state.history
+    const reverseHistory = this.state.history.slice().reverse();
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-    const moves = history.map((step, moveNumber) => {
+    const orderedHistory = this.state.ascendingOrder ? history : reverseHistory;
+    const numMoves = history.length - 1
+    const moves = orderedHistory.map((step, moveNumber) => {
+      moveNumber = this.state.ascendingOrder ? moveNumber : numMoves - moveNumber
       const desc = moveNumber ?
         'Go to move #' + moveNumber + ': ' + step.move:
         'Go to game start';
       return (
-        <li key={moveNumber} style={{'fontWeight': this.state.stepNumber === moveNumber ? 'bold' : 'normal'}}>
+        <li key={step.move} style={{'fontWeight': this.state.stepNumber === moveNumber ? 'bold' : 'normal'}}>
           <button style={{'fontWeight': 'inherit'}} onClick={() => this.jumpTo(moveNumber)}>{desc}</button>
         </li>
       );
