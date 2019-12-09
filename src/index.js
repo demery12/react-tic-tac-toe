@@ -91,6 +91,7 @@ class Game extends React.Component {
     const current = history[this.state.stepNumber];
     const winningSquares = calculateWinner(current.squares);
     const winner = winningSquares ? current.squares[winningSquares[0]] : null;
+    const draw = checkIfBoardFull(current.squares);
     const orderedHistory = this.state.ascendingOrder ? history : reverseHistory;
     const numMoves = history.length - 1
     const moves = orderedHistory.map((step, moveNumber) => {
@@ -108,6 +109,8 @@ class Game extends React.Component {
     let status;
     if (winner) {
       status = 'Winner: ' + winner;
+    } else if (draw){
+        status = 'It is a draw!';
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
@@ -156,6 +159,15 @@ function calculateWinner(squares) {
     }
   }
   return null;
+}
+
+function checkIfBoardFull(squares){
+    for(let i of squares){
+        if(i === null){
+            return false;
+        }
+    }
+    return true;
 }
 
 function indexToColRow(i) {
